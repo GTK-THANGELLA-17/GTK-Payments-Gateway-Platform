@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>G T K Payments - UPI Payment & To-Do App</title>
+  <title>G T K Payments - UPI, Card, Wallet & To-Do App</title>
   <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
   <!-- Font Awesome Icons -->
@@ -25,12 +25,45 @@
       overflow-x: hidden;
       background: radial-gradient(circle at top left, #e0e0e0, #ffffff);
       color: #333;
+      transition: background-color 0.5s, color 0.5s;
     }
     a {
       text-decoration: none;
       color: inherit;
     }
+   /* Dark mode styles */
+body.dark-mode {
+  background: #121212;
+  color: #ddd;
+}
 
+body.dark-mode .container {
+  background-color: #1e1e1e;
+  border-color: #444;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+body.dark-mode .site-header,
+body.dark-mode .site-footer {
+  background: #333;
+}
+
+body.dark-mode .form-control {
+  background-color: #000; /* Set the background to black */
+  color: #000; /* Set the text color to black */
+  border-color: #555; /* Border color */
+}
+
+body.dark-mode .form-control:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 8px rgba(0, 123, 255, 0.5);
+}
+
+body.dark-mode .btn {
+  border: none;
+}
+
+    
     /* ==============================================
        Intro / Splash Screen
     =============================================== */
@@ -74,7 +107,6 @@
       transform: scale(1.05);
       box-shadow: 0 0 20px rgba(0, 184, 148, 0.8);
     }
-
     @keyframes fadeIn {
       from { opacity: 0; }
       to { opacity: 1; }
@@ -98,7 +130,7 @@
       width: 100%;
       background: linear-gradient(135deg, #d63031, #e17055);
       color: #fff;
-      padding: 15px 20px;
+      padding: 10px 20px;
       z-index: 1500;
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
       display: flex;
@@ -109,6 +141,31 @@
       font-size: 1.8rem;
       font-weight: 700;
       letter-spacing: 1px;
+    }
+    .site-header .nav-links {
+      display: flex;
+      align-items: center;
+    }
+    .site-header .nav-links a {
+      margin: 0 10px;
+      color: #fff;
+      font-weight: 500;
+    }
+    .site-header .profile-info {
+      display: flex;
+      align-items: center;
+    }
+    .site-header .profile-info img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      margin-right: 10px;
+      object-fit: cover;
+    }
+    .site-header .toggle-mode {
+      margin-left: 10px;
+      cursor: pointer;
+      font-size: 1.2rem;
     }
     .site-header .payment-animation {
       position: relative;
@@ -217,6 +274,7 @@
     .form-group input[type="text"],
     .form-group input[type="tel"],
     .form-group input[type="email"],
+    .form-group input[type="password"],
     .form-group input[type="number"],
     .form-group select {
       width: 100%;
@@ -366,13 +424,70 @@
       50% { transform: scale(1.1); }
       100% { transform: scale(1); }
     }
+    
+    /* ==============================================
+       Profile Section Styles
+    =============================================== */
+    #profile-section {
+      display: none;
+    }
+    #profile-section img.profile-pic {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-bottom: 15px;
+    }
+    #history-list {
+      list-style: none;
+      padding-left: 0;
+    }
+    #history-list li {
+      border-bottom: 1px solid #ccc;
+      padding: 8px 0;
+    }
+	
+	/* Center the modal vertically and horizontally */
+.modal-dialog-centered {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh; /* Ensure it takes up the full height of the viewport */
+}
+
+/* Optionally, add more styling for the modal content to make it visually appealing */
+.modal-content {
+  border-radius: 10px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Adjustments for modal header, body, and footer */
+.modal-header, .modal-body, .modal-footer {
+  padding: 20px;
+}
+
+.modal-header {
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #ddd;
+}
+
+.modal-body {
+  background-color: #ffffff;
+  font-size: 1rem;
+}
+
+.modal-footer {
+  background-color: #f8f9fa;
+  border-top: 1px solid #ddd;
+}
+
   </style>
 </head>
 <body>
   <!-- =================== Intro / Splash Screen =================== -->
   <div id="intro-page">
     <h1><i class="fas fa-lock"></i> Welcome to G T K Payments</h1>
-    <p>Your secure gateway to seamless UPI payments and more!</p>
+    <p>Your secure gateway to seamless payments and more!</p>
     <button id="enterAppBtn">Enter App <i class="fas fa-arrow-right"></i></button>
   </div>
 
@@ -381,11 +496,24 @@
     <div class="logo">
       <i class="fas fa-wallet"></i> G T K Payments
     </div>
+    <div class="nav-links">
+      <a href="#" id="aboutLink">About</a>
+      <a href="#" id="howToLink">How to Use</a>
+      <a href="#" id="profileLink">Profile</a>
+      <a href="#" id="loginLink">Login</a>
+      <a href="#" id="logoutLink" style="display:none;">Logout</a>
+      <span class="toggle-mode" id="toggleModeBtn" title="Toggle Dark/Light Mode"><i class="fas fa-adjust"></i></span>
+    </div>
     <div class="payment-animation">
       <div class="currency-container">
         <div class="currency-item"></div>
       </div>
       <div class="upi-text">UPI</div>
+    </div>
+    <!-- When logged in, show profile info -->
+    <div class="profile-info" id="headerProfile" style="display:none;">
+      <img id="headerProfilePic" src="" alt="Profile">
+      <span id="headerProfileName"></span>
     </div>
   </header>
 
@@ -395,7 +523,7 @@
     <!-- Info Box Toggle -->
     <button id="infoButton" class="btn btn-info"><i class="fas fa-info-circle"></i> Show Info</button>
     <div id="infoBox" class="hidden mt-3 p-3 bg-light border rounded">
-      <p>You can securely make payments through this app directly to shops, showrooms, and theaters using their respective UPI IDs, ensuring a direct and safe transaction experience.</p>
+      <p>You can securely make payments through this app directly to shops, showrooms, theaters, cards or wallet options. Choose the method that suits you best.</p>
       <button id="closeButton" class="btn btn-secondary"><i class="fas fa-times"></i> Close</button>
     </div>
 
@@ -424,7 +552,7 @@
         <input type="checkbox" id="terms" class="terms-toggle" required />
         <label for="terms" class="ml-2">I agree to the <a href="#" id="terms-link">Terms and Conditions</a></label>
         <div class="terms-content mt-2" style="display: none;">
-          <p>By using this platform, you agree to our terms and conditions. We provide a secure method for making payments directly to shops, showrooms, and theaters.</p>
+          <p>By using this platform, you agree to our terms and conditions. We provide a secure method for making payments directly to shops, showrooms, theaters, cards and wallets.</p>
         </div>
       </div>
       <!-- Platform Selection -->
@@ -484,7 +612,7 @@
     <div id="qr-code" class="mt-4 text-center"></div>
     <div id="selected-details" class="mt-4"></div>
 
-    <!-- Payment Platform Options -->
+    <!-- Payment Platform Options (including additional Card and Wallet options) -->
     <div id="payment-platforms" class="payment-options mt-4"></div>
 
     <!-- Share Options -->
@@ -497,14 +625,104 @@
     </div>
   </div>
 
+  <!-- =================== Profile Section =================== -->
+  <div class="container" id="profile-section">
+    <h1><i class="fas fa-user"></i> Your Profile</h1>
+    <div class="text-center">
+      <img src="" alt="Profile Picture" class="profile-pic" id="profilePic">
+      <h3 id="profileName"></h3>
+      <p id="profileEmail"></p>
+      <p id="profileMobile"></p>
+    </div>
+    <h2 class="mt-4">Payment History</h2>
+    <ul id="history-list"></ul>
+  </div>
+
   <!-- =================== Footer =================== -->
   <footer class="site-footer">
     <p>&copy; 2024 Designed and Built by G. Thangella</p>
   </footer>
 
-  <!-- ==============================================
-       Scripts and Enhanced Functionality
-       ============================================== -->
+  <!-- =================== Modals =================== -->
+
+  <!-- Login Modal -->
+<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered"> <!-- Added modal-dialog-centered here -->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="loginModalLabel">User Login</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form id="loginForm">
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="loginEmail">Email:</label>
+            <input type="email" class="form-control" id="loginEmail" placeholder="Enter email" required />
+          </div>
+          <div class="form-group">
+            <label for="loginPassword">Password:</label>
+            <input type="password" class="form-control" id="loginPassword" placeholder="Password" required />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Login</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- About Modal -->
+<div class="modal fade" id="aboutModal" tabindex="-1" aria-labelledby="aboutModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered"> <!-- Added modal-dialog-centered here -->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="aboutModalLabel">About G T K Payments</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>This application is a secure payment platform that supports multiple payment methods including UPI, Card, and Wallet payments. It is designed to provide users with a smooth, user-friendly interface and quick payment processing. The app also includes a profile area where your payment history is stored for your convenience.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- How To Use Modal -->
+<div class="modal fade" id="howToModal" tabindex="-1" aria-labelledby="howToModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered"> <!-- Added modal-dialog-centered here -->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="howToModalLabel">How to Use This App</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <ol>
+          <li>Login using your email and password.</li>
+          <li>Fill in your personal and payment details on the main form.</li>
+          <li>Select a platform (shops, showrooms, or theaters) and then search for the specific outlet.</li>
+          <li>Enter the amount and generate a QR code or download your payment details.</li>
+          <li>Alternatively, choose card or wallet payment options.</li>
+          <li>Your payment history will be stored in your profile.</li>
+        </ol>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <!-- =================== Scripts and Enhanced Functionality =================== -->
   <!-- jQuery and Bootstrap JS -->
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
@@ -519,13 +737,110 @@
     const mainContent = document.getElementById('mainContent');
 
     enterAppBtn.addEventListener('click', () => {
-      // Fade out intro and show main content
       introPage.style.transition = 'opacity 0.8s ease';
       introPage.style.opacity = '0';
       setTimeout(() => {
         introPage.style.display = 'none';
         mainContent.style.display = 'block';
       }, 900);
+    });
+
+    /* =======================================================
+       Dark/Light Mode Toggle
+    ======================================================== */
+    const toggleModeBtn = document.getElementById('toggleModeBtn');
+    toggleModeBtn.addEventListener('click', () => {
+      document.body.classList.toggle('dark-mode');
+    });
+
+    /* =======================================================
+       Dummy User Authentication & Profile Handling
+    ======================================================== */
+    let currentUser = null;
+    // Check if user is logged in from localStorage (if any)
+    if(localStorage.getItem('currentUser')){
+      currentUser = JSON.parse(localStorage.getItem('currentUser'));
+      updateHeaderProfile();
+    }
+
+    // Update header and profile section if logged in
+    function updateHeaderProfile(){
+      if(currentUser){
+        document.getElementById('loginLink').style.display = 'none';
+        document.getElementById('logoutLink').style.display = 'inline';
+        document.getElementById('headerProfile').style.display = 'flex';
+        document.getElementById('headerProfilePic').src = currentUser.profilePic || 'https://via.placeholder.com/40';
+        document.getElementById('headerProfileName').innerText = currentUser.name;
+      }
+    }
+    // Save payment history to user profile in localStorage
+    function saveHistory(entry) {
+      if(currentUser) {
+        currentUser.history = currentUser.history || [];
+        currentUser.history.push(entry);
+        localStorage.setItem('currentUser', JSON.stringify(currentUser));
+        updateProfileSection();
+      }
+    }
+    function updateProfileSection(){
+      if(currentUser){
+        document.getElementById('profilePic').src = currentUser.profilePic || 'https://via.placeholder.com/100';
+        document.getElementById('profileName').innerText = currentUser.name;
+        document.getElementById('profileEmail').innerText = currentUser.email;
+        document.getElementById('profileMobile').innerText = currentUser.mobile;
+        const historyList = document.getElementById('history-list');
+        historyList.innerHTML = '';
+        if(currentUser.history && currentUser.history.length){
+          currentUser.history.forEach(item => {
+            const li = document.createElement('li');
+            li.innerText = item;
+            historyList.appendChild(li);
+          });
+        } else {
+          historyList.innerHTML = '<li>No payment history.</li>';
+        }
+      }
+    }
+    // Login modal handling
+    document.getElementById('loginLink').addEventListener('click', () => {
+      $('#loginModal').modal('show');
+    });
+    document.getElementById('logoutLink').addEventListener('click', () => {
+      currentUser = null;
+      localStorage.removeItem('currentUser');
+      document.getElementById('loginLink').style.display = 'inline';
+      document.getElementById('logoutLink').style.display = 'none';
+      document.getElementById('headerProfile').style.display = 'none';
+      // Also hide profile section if open
+      document.getElementById('profile-section').style.display = 'none';
+      mainContent.style.display = 'block';
+    });
+    document.getElementById('loginForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      // Dummy validation: In a real app, send credentials to server
+      const email = document.getElementById('loginEmail').value.trim();
+      const password = document.getElementById('loginPassword').value.trim();
+      // For demo, we accept any login and assign a dummy profile pic and name from the email.
+      currentUser = {
+        email,
+        name: email.split('@')[0],
+        mobile: 'Not Provided',
+        profilePic: 'https://via.placeholder.com/100',
+        history: []
+      };
+      localStorage.setItem('currentUser', JSON.stringify(currentUser));
+      updateHeaderProfile();
+      $('#loginModal').modal('hide');
+    });
+    // Profile link handling
+    document.getElementById('profileLink').addEventListener('click', () => {
+      if(currentUser){
+        updateProfileSection();
+        document.getElementById('profile-section').style.display = 'block';
+        mainContent.style.display = 'none';
+      } else {
+        alert("Please login to view your profile.");
+      }
     });
 
     /* =======================================================
@@ -536,23 +851,26 @@
     }
 
     /* =======================================================
-       Payment Platform Handling Functions
+       Payment Platform Handling Functions (including Card and Wallet)
     ======================================================== */
     function handlePlatformClick(platform, upiId, amount, name) {
+      // Payment URLs for UPI-based methods
       const paymentUrls = {
         paytm: `paytmmp://pay?pa=${encodeURIComponent(upiId)}&pn=${encodeURIComponent(name)}&am=${encodeURIComponent(amount)}&cu=INR`,
         phonepe: `phonepe://pay?pa=${encodeURIComponent(upiId)}&pn=${encodeURIComponent(name)}&am=${encodeURIComponent(amount)}&cu=INR`,
         gpay: `upi://pay?pa=${encodeURIComponent(upiId)}&pn=${encodeURIComponent(name)}&am=${encodeURIComponent(amount)}&cu=INR`,
-        amazonpay: `amazonpay://pay?pa=${encodeURIComponent(upiId)}&pn=${encodeURIComponent(name)}&am=${encodeURIComponent(amount)}&cu=INR`
+        amazonpay: `amazonpay://pay?pa=${encodeURIComponent(upiId)}&pn=${encodeURIComponent(name)}&am=${encodeURIComponent(amount)}&cu=INR`,
+        card: `https://www.example.com/cardpay?amount=${encodeURIComponent(amount)}&name=${encodeURIComponent(name)}`,
+        wallet: `https://www.example.com/walletpay?amount=${encodeURIComponent(amount)}&name=${encodeURIComponent(name)}`
       };
-
       const fallbackUrls = {
         paytm: `https://paytm.com/pay?pa=${encodeURIComponent(upiId)}&pn=${encodeURIComponent(name)}&am=${encodeURIComponent(amount)}&cu=INR`,
         phonepe: `https://www.phonepe.com/`,
         gpay: `https://pay.google.com/`,
-        amazonpay: `https://www.amazon.in/amazonpay/home`
+        amazonpay: `https://www.amazon.in/amazonpay/home`,
+        card: `https://www.example.com/cardpay`,
+        wallet: `https://www.example.com/walletpay`
       };
-
       const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
       let paymentUrl = isMobile ? paymentUrls[platform] : fallbackUrls[platform];
       if (paymentUrl) {
@@ -569,7 +887,9 @@
         { id: 'paytm', name: 'Paytm', icon: 'fas fa-money-bill-wave' },
         { id: 'phonepe', name: 'PhonePe', icon: 'fas fa-money-bill-wave' },
         { id: 'gpay', name: 'Google Pay', icon: 'fas fa-money-bill-wave' },
-        { id: 'amazonpay', name: 'Amazon Pay', icon: 'fab fa-amazon-pay' }
+        { id: 'amazonpay', name: 'Amazon Pay', icon: 'fab fa-amazon-pay' },
+        { id: 'card', name: 'Card Payment', icon: 'far fa-credit-card' },
+        { id: 'wallet', name: 'Wallet Payment', icon: 'fas fa-wallet' }
       ];
       platforms.forEach(platform => {
         const button = document.createElement('button');
@@ -580,7 +900,7 @@
         button.style.marginBottom = '10px';
         button.addEventListener('click', () => handlePlatformClick(platform.id, upiId, amount, name));
         paymentPlatforms.appendChild(button);
-        if (platform.id !== 'amazonpay') {
+        if (platform.id !== 'amazonpay' && platform.id !== 'card' && platform.id !== 'wallet') {
           button.addEventListener('mouseenter', () => {
             button.querySelector('i').classList.add('zoom-in-out');
           });
@@ -657,7 +977,7 @@
 
       const amount = document.getElementById("amount").value.trim();
 
-      // Generate and display QR Code
+      // Generate and display QR Code for UPI payments
       const qrCode = document.getElementById("qr-code");
       const qrCodeImg = document.createElement("img");
       qrCodeImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=${encodeURIComponent(upiId)}&pn=${encodeURIComponent(name)}&tn=${encodeURIComponent(platformName)}&am=${encodeURIComponent(amount)}&cu=INR`;
@@ -665,10 +985,9 @@
       qrCode.innerHTML = "";
       qrCode.appendChild(qrCodeImg);
 
-      // Generate unique code
+      // Generate unique code and display details
       const uniqueCode = generateUniqueCode();
 
-      // Display details
       const selectedDetails = document.getElementById("selected-details");
       selectedDetails.innerHTML = `
           <h2>${platformName} Details</h2>
@@ -689,6 +1008,12 @@
       document.getElementById("pay-button").addEventListener("click", function () {
         generatePaymentButtons(upiId, amount, name);
       });
+      
+      // Save payment history if user is logged in
+      if(currentUser) {
+        const historyEntry = `Payment of ₹${amount} via ${platformName} on ${new Date().toLocaleString()}`;
+        saveHistory(historyEntry);
+      }
     });
 
     /* =======================================================
@@ -697,14 +1022,12 @@
     document.getElementById("download-btn").addEventListener("click", function () {
       const details = document.getElementById("selected-details").innerText;
       const blob = new Blob([details], { type: "text/plain;charset=utf-8" });
-      // Check for Cordova permission (if applicable) or fallback to download
       function requestStoragePermission(callback) {
         if (window.cordova && cordova.plugins && cordova.plugins.permissions) {
           cordova.plugins.permissions.requestPermission(
             cordova.plugins.permissions.WRITE_EXTERNAL_STORAGE,
             function (status) {
               if (status.hasPermission) {
-                console.log('Storage permission granted');
                 callback();
               } else {
                 alert('Permission denied. Cannot download file.');
@@ -721,7 +1044,6 @@
       function downloadAndSaveFile() {
         const url = URL.createObjectURL(blob);
         const fileName = "payment_details.txt";
-        // For web browsers, we can trigger a download
         const a = document.createElement("a");
         a.href = url;
         a.download = fileName;
@@ -798,6 +1120,37 @@
     document.getElementById('closeButton').addEventListener('click', function () {
       document.getElementById('infoBox').classList.add('hidden');
     });
+
+    /* =======================================================
+       About and How To Use Modal Handling
+    ======================================================== */
+    document.getElementById('aboutLink').addEventListener('click', () => {
+      $('#aboutModal').modal('show');
+    });
+    document.getElementById('howToLink').addEventListener('click', () => {
+      $('#howToModal').modal('show');
+    });
+	
+	// Info button click event to toggle the info box visibility
+  document.getElementById('infoButton').addEventListener('click', function() {
+    const infoBox = document.getElementById('infoBox');
+    
+    // Toggle the display of the info box
+    if (infoBox.style.display === 'none' || infoBox.style.display === '') {
+      infoBox.style.display = 'block'; // Show the info box
+      document.getElementById('infoButton').textContent = 'Hide Info'; // Change button text to "Hide Info"
+    } else {
+      infoBox.style.display = 'none'; // Hide the info box
+      document.getElementById('infoButton').textContent = 'Show Info'; // Change button text back to "Show Info"
+    }
+  });
+
+  // Close button click event to hide the info box
+  document.getElementById('closeButton').addEventListener('click', function() {
+    const infoBox = document.getElementById('infoBox');
+    infoBox.style.display = 'none'; // Hide the info box
+    document.getElementById('infoButton').textContent = 'Show Info'; // Reset the button text
+  });
   </script>
 </body>
 </html>
